@@ -271,12 +271,13 @@ angular.module('colorpicker.module', [])
               inline = angular.isDefined(attrs.colorpickerInline) ? attrs.colorpickerInline : false,
               fixedPosition = angular.isDefined(attrs.colorpickerFixedPosition) ? attrs.colorpickerFixedPosition : false,
               inElem = angular.isDefined(attrs.colorpickerInElem) ? attrs.colorpickerInElem : false,
-              target = angular.isDefined(attrs.colorpickerParent) ? elem.parent() : angular.element(document.body),
+              target = inElem ? elem : (angular.isDefined(attrs.colorpickerParent) ? elem.parent() : angular.element(document.body)),
               withInput = angular.isDefined(attrs.colorpickerWithInput) ? attrs.colorpickerWithInput : false,
-              componentSize = angular.isDefined(attrs.colorpickerSize) ? attrs.colorpickerSize : 100,
+              toolbarWidth = 29 + (thisFormat == 'rgba' ? 15: 0),
+              componentSize = inElem ? (elem.width() - toolbarWidth) : (angular.isDefined(attrs.colorpickerSize) ? attrs.colorpickerSize : 100),
               componentSizePx = componentSize + 'px',
               inputTemplate = withInput ? '<input type="text" name="colorpicker-input" spellcheck="false">' : '',
-              closeButton = !inline ? '<button type="button" class="close close-colorpicker">&times;</button>' : '',
+              closeButton = !inline && !inElem ? '<button type="button" class="close close-colorpicker">&times;</button>' : '',
               template =
                   '<div class="colorpicker' + (!inElem ? (' dropdown">') : ('">')) +
                       (!inElem ? ('<div class="dropdown-menu">') : ('')) +
@@ -301,7 +302,7 @@ angular.module('colorpicker.module', [])
               sliderSaturation = colorpickerTemplate.find('colorpicker-saturation'),
               colorpickerPreview = colorpickerTemplate.find('colorpicker-preview'),
               pickerColorPointers = colorpickerTemplate.find('i'),
-              componentWidthWithToolbars = parseInt(componentSize) + 29 + (thisFormat === 'rgba' ? 15 : 0),
+              componentWidthWithToolbars = parseInt(componentSize) + toolbarWidth,
               componentHeightWithToolbars = parseInt(componentSize) + 55;
 
           $compile(colorpickerTemplate)($scope);
@@ -314,7 +315,7 @@ angular.module('colorpicker.module', [])
 
           if (withInput) {
             var pickerColorInput = colorpickerTemplate.find('input');
-            pickerColorInput.css('width', componentSizePx);
+            pickerColorInput.css('width', inElem ? "100%" : componentSizePx);
             pickerColorInput
                 .on('mousedown', function(event) {
                   event.stopPropagation();
@@ -519,7 +520,7 @@ angular.module('colorpicker.module', [])
                 .css(getColorpickerTemplatePosition());
               emitEvent('colorpicker-shown');
 
-              if (inline === false) {
+              if (!inElem && inline === false) {
                 // register global mousedown event to hide the colorpicker
                 $document.on('mousedown', documentMousedownHandler);
               }
