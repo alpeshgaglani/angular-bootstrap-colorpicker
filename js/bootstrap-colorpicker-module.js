@@ -300,7 +300,7 @@ angular.module('colorpicker.module', [])
           sliderSaturation = colorpickerTemplate.find('colorpicker-saturation'),
           colorpickerPreview = colorpickerTemplate.find('colorpicker-preview'),
           pickerColorPointers = colorpickerTemplate.find('i')
-          sliderAlpha = colorpickerTemplate.find('colorpicker-alpha');
+        sliderAlpha = colorpickerTemplate.find('colorpicker-alpha');
         var componentSize, componentSizePx, componentWidthWithToolbars, componentHeightWithToolbars;
 
         function sizeColorChooser() {
@@ -319,14 +319,15 @@ angular.module('colorpicker.module', [])
           }
         }
         sizeColorChooser();
-        var resizeObserver = new ResizeObserver((entries) => {
+
+        var resizeObserver = new ResizeObserver(function (entries) {
           sizeColorChooser();
           update();
         });
         resizeObserver.observe(elem.get(0));
         $scope.$on("$destroy", function () {
           resizeObserver.disconnect();
-        })
+        });
 
         $compile(colorpickerTemplate)($scope);
 

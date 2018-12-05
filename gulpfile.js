@@ -29,7 +29,9 @@ gulp.task('jshint', function () {
 
 gulp.task('compress', function() {
   gulp.src('./js/bootstrap-colorpicker-module.js')
-      .pipe(uglify())
+      .pipe(uglify().on('error', function(e){
+        console.log(e);
+     }))
       .pipe(rename('bootstrap-colorpicker-module.min.js'))
       .pipe(gulp.dest('./js'))
 });
